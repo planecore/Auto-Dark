@@ -10,6 +10,8 @@
 		905E4A7921A19E2500D1DBC7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E4A7821A19E2500D1DBC7 /* AppDelegate.swift */; };
 		905E4A7B21A19E2500D1DBC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E4A7A21A19E2500D1DBC7 /* Assets.xcassets */; };
 		905E4A7E21A19E2500D1DBC7 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 905E4A7C21A19E2500D1DBC7 /* MainMenu.xib */; };
+		905E4A8921A1A33300D1DBC7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E4A8821A1A33300D1DBC7 /* ViewController.swift */; };
+		905E4A8B21A1A62200D1DBC7 /* Solar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E4A8A21A1A62200D1DBC7 /* Solar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,7 +20,9 @@
 		905E4A7A21A19E2500D1DBC7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		905E4A7D21A19E2500D1DBC7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		905E4A7F21A19E2500D1DBC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		905E4A8021A19E2500D1DBC7 /* Auto_Dark.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Auto_Dark.entitlements; sourceTree = "<group>"; };
+		905E4A8821A1A33300D1DBC7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		905E4A8A21A1A62200D1DBC7 /* Solar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solar.swift; sourceTree = "<group>"; };
+		905E4A8C21A31BCD00D1DBC7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +39,7 @@
 		905E4A6C21A19E2500D1DBC7 = {
 			isa = PBXGroup;
 			children = (
+				905E4A8C21A31BCD00D1DBC7 /* README.md */,
 				905E4A7721A19E2500D1DBC7 /* Auto Dark */,
 				905E4A7621A19E2500D1DBC7 /* Products */,
 			);
@@ -52,10 +57,11 @@
 			isa = PBXGroup;
 			children = (
 				905E4A7821A19E2500D1DBC7 /* AppDelegate.swift */,
+				905E4A8821A1A33300D1DBC7 /* ViewController.swift */,
+				905E4A8A21A1A62200D1DBC7 /* Solar.swift */,
 				905E4A7A21A19E2500D1DBC7 /* Assets.xcassets */,
 				905E4A7C21A19E2500D1DBC7 /* MainMenu.xib */,
 				905E4A7F21A19E2500D1DBC7 /* Info.plist */,
-				905E4A8021A19E2500D1DBC7 /* Auto_Dark.entitlements */,
 			);
 			path = "Auto Dark";
 			sourceTree = "<group>";
@@ -92,6 +98,11 @@
 				TargetAttributes = {
 					905E4A7421A19E2500D1DBC7 = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -130,6 +141,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				905E4A8B21A1A62200D1DBC7 /* Solar.swift in Sources */,
+				905E4A8921A1A33300D1DBC7 /* ViewController.swift in Sources */,
 				905E4A7921A19E2500D1DBC7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -267,10 +280,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Auto Dark/Auto_Dark.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = T8HKXLJ6T3;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Auto Dark/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -286,10 +298,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Auto Dark/Auto_Dark.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = T8HKXLJ6T3;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Auto Dark/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
