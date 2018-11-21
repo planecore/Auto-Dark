@@ -70,6 +70,8 @@ class ViewController: NSObject {
     @IBOutlet weak var locationLabel: NSMenuItem!
     @IBOutlet weak var informationLabel: NSMenuItem!
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    var timer: Timer?
+    var date: Date?
     
     override func awakeFromNib() {
         let icon = NSImage(named: "StatusIcon")
@@ -80,6 +82,12 @@ class ViewController: NSObject {
         if let loc = currentLocation {
             locationLabel.title = loc
         }
+        timer = Timer(fire: Date().addingTimeInterval(10), interval: 60, repeats: true) { (t) in
+            if let date = self.date, Date() > date {
+                self.getSunTimes()
+            }
+        }
+        RunLoop.main.add(timer!, forMode: .common)
         getSunTimes()
     }
     
@@ -111,12 +119,12 @@ class ViewController: NSObject {
                         nextRun = Solar(for: Calendar.current.date(byAdding: .day, value: 1, to: Date())!, coordinate: coord)?.sunrise
                     }
                     if let next = nextRun {
-                        let timer = Timer(fireAt: next, interval: 0, target: self, selector: #selector(self.getSunTimes), userInfo: nil, repeats: false)
-                        RunLoop.main.add(timer, forMode: RunLoop.Mode.common)
+                        self.date = next
                         let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "h:mm"
+                        dateFormatter.dateFormat = "H:mm"
                         self.informationLabel.title = (solar.isDaytime ? "Sunset: " : "Sunrise: ") + dateFormatter.string(from: next)
                     } else {
+                        self.date = nil
                         self.informationLabel.title = "Can't calculate auto dark mode at your location."
                     }
                 }
