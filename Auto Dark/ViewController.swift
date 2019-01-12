@@ -63,12 +63,14 @@ func runAppleScript(_ source: String) -> String {
     return outstr
 }
 
+
 class ViewController: NSObject {
     
     @IBOutlet weak var statusMenu: NSMenu!
     var currentLocation = UserDefaults.standard.string(forKey: "location")
     @IBOutlet weak var locationLabel: NSMenuItem!
     @IBOutlet weak var informationLabel: NSMenuItem!
+    @IBOutlet weak var button: NSMenuItem!
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     var timer: Timer?
     var date: Date?
@@ -78,12 +80,11 @@ class ViewController: NSObject {
         icon?.isTemplate = true
         statusItem.button?.image = icon
         statusItem.menu = statusMenu
-        informationLabel.title = "Calculating..."
         if let loc = currentLocation {
             locationLabel.title = loc
         }
         timer = Timer(fire: Date().addingTimeInterval(10), interval: 60, repeats: true) { (t) in
-            if let date = self.date, Date() > date {
+            if let date = self.date, Date() > date || self.button.title == "Try Again" {
                 self.getSunTimes()
             }
         }
@@ -92,6 +93,7 @@ class ViewController: NSObject {
     }
     
     @objc func getSunTimes() {
+        informationLabel.title = "Calculating..."
         guard let address = currentLocation else {
             let getLocation = textBoxAlert(title: "Change Location", question: "What's the address?", defaultValue: "")
             if let loc = getLocation {
@@ -102,10 +104,12 @@ class ViewController: NSObject {
             getSunTimes()
             return
         }
+        self.locationLabel.title = address
         let geo = CLGeocoder()
         geo.geocodeAddressString(address) { (place, error) in
             if let place = place {
                 if let coord = place.first?.location?.coordinate {
+                    self.button.title = "Change Location"
                     print("Calculating for \(address)")
                     let solar = Solar(coordinate: coord)!
                     var nextRun: Date?
@@ -128,6 +132,9 @@ class ViewController: NSObject {
                         self.informationLabel.title = "Can't calculate auto dark mode at your location."
                     }
                 }
+            } else if error.debugDescription.contains("Domain=kCLErrorDomain Code=2") {
+                self.informationLabel.title = "Please check your internet connection."
+                self.button.title = "Try Again"
             } else {
                 let getLocation = self.textBoxAlert(title: "Invalid Location", question: "What's the address?", defaultValue: "")
                 if let loc = getLocation {
@@ -141,12 +148,16 @@ class ViewController: NSObject {
     }
     
     @IBAction func changeLocation(sender: NSMenuItem) {
-        let getLocation = textBoxAlert(title: "Change Location", question: "What's the address?", defaultValue: "")
-        if let loc = getLocation {
-            UserDefaults.standard.set(loc, forKey: "location")
-            locationLabel.title = loc
-            currentLocation = loc
+        if sender.title == "Try Again" {
             getSunTimes()
+        } else {
+            let getLocation = textBoxAlert(title: "Change Location", question: "What's the address?", defaultValue: "")
+            if let loc = getLocation {
+                UserDefaults.standard.set(loc, forKey: "location")
+                locationLabel.title = loc
+                currentLocation = loc
+                getSunTimes()
+            }
         }
     }
     
