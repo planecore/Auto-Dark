@@ -15,24 +15,24 @@
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <customObject id="FTK-KS-jiM" customClass="ViewController" customModule="Auto_Dark" customModuleProvider="target">
             <connections>
-                <outlet property="button" destination="nQy-si-fb5" id="5mr-Ir-0O6"/>
                 <outlet property="informationLabel" destination="x2j-lb-dGE" id="h2a-gN-Zth"/>
                 <outlet property="locationLabel" destination="RV8-CO-E97" id="gSy-qa-8XP"/>
+                <outlet property="preferences" destination="nQy-si-fb5" id="3Pe-wH-4U6"/>
                 <outlet property="statusMenu" destination="7xj-JG-sLp" id="n0X-pL-B5w"/>
             </connections>
         </customObject>
         <menu id="7xj-JG-sLp">
             <items>
-                <menuItem title="Current Location" enabled="NO" id="RV8-CO-E97">
+                <menuItem title="Auto Dark" enabled="NO" id="RV8-CO-E97">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem title="Calculating..." enabled="NO" id="x2j-lb-dGE">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
-                <menuItem title="Change Location" id="nQy-si-fb5">
+                <menuItem title="Preferences" id="nQy-si-fb5">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="changeLocationWithSender:" target="FTK-KS-jiM" id="fdv-pW-O38"/>
+                        <action selector="openPreferencesWithSender:" target="FTK-KS-jiM" id="irE-T0-LhT"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="hTN-mg-gtQ"/>

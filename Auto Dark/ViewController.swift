@@ -63,125 +63,106 @@ func runAppleScript(_ source: String) -> String {
     return outstr
 }
 
+enum ScheduleMode: String {
+    case location = "Location", manual = "Manual", time = "Time"
+}
 
-class ViewController: NSObject {
+struct DarkDate {
+    var date: Date?
+    var dark: Bool
+}
+
+protocol DarkManager {
+    var delegate: ViewControllerDelegate? {get set}
+    var next: DarkDate? {get}
+    func calculateNextDate()
+}
+
+protocol ViewControllerDelegate {
+    func updatedNextDate()
+    func setLocationLabel(string: String)
+    func setInformationLabel(string: String)
+    func setDarkManager()
+}
+
+class ViewController: NSObject, ViewControllerDelegate {
     
+    var darkManager: DarkManager?
+    var first = true
     @IBOutlet weak var statusMenu: NSMenu!
-    var currentLocation = UserDefaults.standard.string(forKey: "location")
     @IBOutlet weak var locationLabel: NSMenuItem!
     @IBOutlet weak var informationLabel: NSMenuItem!
-    @IBOutlet weak var button: NSMenuItem!
+    @IBOutlet weak var preferences: NSMenuItem!
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     var timer: Timer?
-    var date: Date?
+    var date: DarkDate?
     
     override func awakeFromNib() {
         let icon = NSImage(named: "StatusIcon")
         icon?.isTemplate = true
         statusItem.button?.image = icon
         statusItem.menu = statusMenu
-        if let loc = currentLocation {
-            locationLabel.title = loc
+        setDarkManager()
+    }
+    
+    func setDarkManager() {
+        timer?.invalidate()
+        if let stringMode = UserDefaults.standard.string(forKey: "mode") {
+            mode = ScheduleMode(rawValue: stringMode)!
         }
-        timer = Timer(fire: Date().addingTimeInterval(10), interval: 60, repeats: true) { (t) in
-            if let date = self.date, Date() > date || self.button.title == "Try Again" {
-                self.getSunTimes()
+        first = true
+        informationLabel.title = "Calculating..."
+        locationLabel.title = "Auto Dark"
+        if mode == .time {
+            darkManager = ScheduleManager()
+            darkManager?.delegate = self
+            darkManager?.calculateNextDate()
+        } else {
+            darkManager = LocationManager(pref: mode)
+            darkManager?.delegate = self
+        }
+        timer = Timer(fire: Date().addingTimeInterval(10), interval: 60, repeats: true) { t in
+            if let date = self.date?.date, Date() > date {
+                DarkMode.toggle(force: self.date!.dark)
+                self.darkManager?.calculateNextDate()
             }
         }
         RunLoop.main.add(timer!, forMode: .common)
-        getSunTimes()
     }
     
-    @objc func getSunTimes() {
-        informationLabel.title = "Calculating..."
-        guard let address = currentLocation else {
-            let getLocation = textBoxAlert(title: "Change Location", question: "What's the address?", defaultValue: "")
-            if let loc = getLocation {
-                UserDefaults.standard.set(loc, forKey: "location")
-                locationLabel.title = loc
-                currentLocation = loc
+    func updatedNextDate() {
+        if let date = darkManager?.next {
+            if first {
+                first = false
+                DarkMode.toggle(force: !date.dark)
             }
-            getSunTimes()
-            return
-        }
-        self.locationLabel.title = address
-        let geo = CLGeocoder()
-        geo.geocodeAddressString(address) { (place, error) in
-            if let place = place {
-                if let coord = place.first?.location?.coordinate {
-                    self.button.title = "Change Location"
-                    print("Calculating for \(address)")
-                    let solar = Solar(coordinate: coord)!
-                    var nextRun: Date?
-                    if solar.isDaytime {
-                        print("Dark mode off")
-                        DarkMode.toggle(force: false)
-                        nextRun = solar.sunset
-                    } else {
-                        print("Dark mode on")
-                        DarkMode.toggle(force: true)
-                        nextRun = Solar(for: Calendar.current.date(byAdding: .day, value: 1, to: Date())!, coordinate: coord)?.sunrise
-                    }
-                    if let next = nextRun {
-                        self.date = next
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "H:mm"
-                        self.informationLabel.title = (solar.isDaytime ? "Sunset: " : "Sunrise: ") + dateFormatter.string(from: next)
-                    } else {
-                        self.date = nil
-                        self.informationLabel.title = "Can't calculate auto dark mode at your location."
-                    }
-                }
-            } else if error.debugDescription.contains("Domain=kCLErrorDomain Code=2") {
-                self.informationLabel.title = "Please check your internet connection."
-                self.button.title = "Try Again"
-            } else {
-                let getLocation = self.textBoxAlert(title: "Invalid Location", question: "What's the address?", defaultValue: "")
-                if let loc = getLocation {
-                    UserDefaults.standard.set(loc, forKey: "location")
-                    self.locationLabel.title = loc
-                    self.currentLocation = loc
-                }
-                self.getSunTimes()
-            }
-        }
-    }
-    
-    @IBAction func changeLocation(sender: NSMenuItem) {
-        if sender.title == "Try Again" {
-            getSunTimes()
+            self.date = date
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "H:mm"
+            self.informationLabel.title = (self.date!.dark ? "Sunset: " : "Sunrise: ") + dateFormatter.string(from: date.date!)
         } else {
-            let getLocation = textBoxAlert(title: "Change Location", question: "What's the address?", defaultValue: "")
-            if let loc = getLocation {
-                UserDefaults.standard.set(loc, forKey: "location")
-                locationLabel.title = loc
-                currentLocation = loc
-                getSunTimes()
-            }
+            self.informationLabel.title = "Can't calculate Dark Mode for your location."
         }
     }
     
-    func textBoxAlert(title: String, question: String, defaultValue: String) -> String? {
-        let msg = NSAlert()
-        msg.addButton(withTitle: "OK")
-        msg.addButton(withTitle: "Cancel")
-        msg.messageText = title
-        msg.informativeText = question
-        
-        let txt = NSTextField(frame: NSRect(x: 0, y: 0, width: 294, height: 24))
-        txt.stringValue = defaultValue
-        msg.accessoryView = txt
-        let response: NSApplication.ModalResponse = msg.runModal()
-        
-        if (response == .alertFirstButtonReturn) {
-            return txt.stringValue
-        } else {
-            if currentLocation != nil {
-                return nil
-            } else {
-                NSApplication.shared.terminate(self)
-                return nil
-            }
+    func setLocationLabel(string: String) {
+        locationLabel.title = string
+    }
+    
+    func setInformationLabel(string: String) {
+        informationLabel.title = string
+    }
+    
+    @IBAction func openPreferences(sender: NSMenuItem) {
+        if !NSApplication.shared.windows.contains { (window) -> Bool in
+            window.title == "Auto Dark"
+            } {
+            let storyboard = NSStoryboard(name: "Preferences", bundle: nil)
+            let windowController = storyboard.instantiateController(withIdentifier: "pref-window") as! NSWindowController
+            let vc = windowController.contentViewController as! PreferencesController
+            vc.delegate = self
+            windowController.window?.level = .floating
+            windowController.showWindow(self)
         }
     }
     

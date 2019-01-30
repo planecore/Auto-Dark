@@ -26,6 +26,8 @@
 
 import Cocoa
 
+var mode = ScheduleMode.location
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
@@ -33,10 +35,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
+        if !UserDefaults.standard.contains(key: "new") {
+            UserDefaults.standard.set(true, forKey: "new")
+            UserDefaults.standard.set("Location", forKey: "mode")
+            UserDefaults.standard.set("7:00", forKey: "sunrise")
+            UserDefaults.standard.set("19:00", forKey: "sunset")
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
 
+}
+
+extension UserDefaults {
+    func contains(key: String) -> Bool {
+        return UserDefaults.standard.value(forKey: key) != nil
+    }
 }

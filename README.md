@@ -1,3 +1,5 @@
+![Header](https://raw.githubusercontent.com/planecore/Auto-Dark/master/Assets/Header.png)
+
 #  Auto Dark
 ## Enable Dark Mode on macOS automatically based on your location.
 
