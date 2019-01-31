@@ -3,7 +3,7 @@
 //  Auto Dark
 //
 //  Created by Matan Mashraki on 18/11/2018.
-//  Copyright © 2018 Matan Mashraki. All rights reserved.
+//  Copyright © 2019 Matan Mashraki. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the “Software”), to deal

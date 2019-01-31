@@ -32,11 +32,10 @@ var mode = ScheduleMode.location
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
-        
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
-        if !UserDefaults.standard.contains(key: "new") {
-            UserDefaults.standard.set(true, forKey: "new")
+        if !UserDefaults.standard.contains(key: "mode") {
             UserDefaults.standard.set("Location", forKey: "mode")
             UserDefaults.standard.set("7:00", forKey: "sunrise")
             UserDefaults.standard.set("19:00", forKey: "sunset")

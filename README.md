@@ -5,4 +5,6 @@
 
 This simple menu bar app calculates the sunrise and sunset times at your loaction and switches Dark Mode accordingly.
 
+![Screenshot](https://raw.githubusercontent.com/planecore/Auto-Dark/master/Assets/Screenshot.png)
+
 Special thanks for this awesome library that calculates sunrise and sunset times: https://github.com/ceeK/Solar/blob/master/Solar/Solar.swift

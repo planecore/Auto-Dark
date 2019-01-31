@@ -31,6 +31,7 @@
 		908230AF21F1FBB600FA2D36 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		908230B121F20F6600FA2D36 /* PreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesController.swift; sourceTree = "<group>"; };
 		90D19C2321F35FF9001C410D /* ScheduleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleManager.swift; sourceTree = "<group>"; };
+		90FB494F22022444000D6510 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +49,7 @@
 			isa = PBXGroup;
 			children = (
 				905E4A8C21A31BCD00D1DBC7 /* README.md */,
+				90FB494F22022444000D6510 /* LICENSE.md */,
 				905E4A7721A19E2500D1DBC7 /* Auto Dark */,
 				905E4A7621A19E2500D1DBC7 /* Products */,
 			);

@@ -5,6 +5,24 @@
 //  Created by Matan Mashraki on 18/01/2019.
 //  Copyright © 2019 Matan Mashraki. All rights reserved.
 //
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the “Software”), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 import Cocoa
 import CoreLocation
@@ -51,15 +69,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
             if pref == .location, CLLocationManager.locationServicesEnabled() {
                 locationManager.startUpdatingLocation()
             } else {
-                let res = showAlert(title: "Location Services Aren't Available", subtitle: "Please turn on location services or set location manually.", button1: "I Enabled Location Services", button2: "Set Location Manually")
-                if res == .alertFirstButtonReturn {
-                    determineCurrentLocation()
-                } else if res == .alertSecondButtonReturn {
-                    pref = .manual
-                    setManualLocation()
-                } else {
-                    NSApplication.shared.terminate(self)
-                }
+                self.delegate?.setInformationLabel(string: "Authorize Auto Dark to detect your location in System Preferences.")
             }
         }
     }
@@ -74,7 +84,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
                     self.calculateNextDate()
                     self.delegate?.setLocationLabel(string: location)
                 } else {
-                    self.delegate?.setInformationLabel(string: "Can't calculate Dark Mode for your location.")
+                    self.presentError(error: error as? CLError)
                 }
             }
         }
@@ -89,26 +99,28 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
                 self.delegate?.setLocationLabel(string: self.stringLocation!)
                 self.calculateNextDate()
             } else {
-                self.delegate?.setInformationLabel(string: "Can't calculate Dark Mode for your location.")
+                self.delegate?.setLocationLabel(string: "Auto Dark")
             }
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Error Location: \(error)")
-        self.delegate?.setInformationLabel(string: "Can't detect your location.")
+        if currentLocation == nil {
+            presentError(error: error as? CLError)
+        }
     }
     
-    func showAlert(title: String, subtitle: String, button1: String, button2: String?) -> NSApplication.ModalResponse {
-        let msg = NSAlert()
-        msg.addButton(withTitle: button1)
-        if let b2 = button2 {
-            msg.addButton(withTitle: b2)
+    func presentError(error: CLError?) {
+        if let err = error {
+            var message = ""
+            switch err.code.rawValue {
+            case 0, 2: message = "There's no internet connection."
+            case 1: message = "Authorize Auto Dark to detect your location in System Preferences."
+            default: message = "Auto Dark can't detect your location"
+            }
+            self.delegate?.setLocationLabel(string: "Auto Dark")
+            self.delegate?.setInformationLabel(string: message)
         }
-        msg.addButton(withTitle: "Cancel")
-        msg.messageText = title
-        msg.informativeText = subtitle
-        return msg.runModal()
     }
     
 }
