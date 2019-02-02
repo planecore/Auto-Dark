@@ -107,6 +107,9 @@ class ViewController: NSObject, ViewControllerDelegate {
     
     func setDarkManager() {
         timer?.invalidate()
+        if let manager = darkManager as? LocationManager, manager.locationManager != nil {
+            manager.locationManager.stopMonitoringSignificantLocationChanges()
+        }
         if let stringMode = UserDefaults.standard.string(forKey: "mode") {
             mode = ScheduleMode(rawValue: stringMode)!
         }
@@ -125,6 +128,8 @@ class ViewController: NSObject, ViewControllerDelegate {
             if let date = self.date?.date, Date() > date {
                 DarkMode.toggle(force: self.date!.dark)
                 self.darkManager?.calculateNextDate()
+            } else if self.date?.dark == DarkMode.isEnabled {
+                DarkMode.toggle(force: !self.date!.dark)
             }
         }
         RunLoop.main.add(timer!, forMode: .common)

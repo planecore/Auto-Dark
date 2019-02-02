@@ -29,7 +29,7 @@ import CoreLocation
 
 class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
     
-    private var locationManager: CLLocationManager!
+    var locationManager: CLLocationManager!
     var delegate: ViewControllerDelegate?
     var next: DarkDate?
     var pref: ScheduleMode
@@ -64,10 +64,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
         } else {
             locationManager = CLLocationManager()
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+            locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
             locationManager.requestLocation()
             if pref == .location, CLLocationManager.locationServicesEnabled() {
-                locationManager.startUpdatingLocation()
+                locationManager.startMonitoringSignificantLocationChanges()
             } else {
                 self.delegate?.setInformationLabel(string: "Authorize Auto Dark to detect your location in System Preferences.")
             }
