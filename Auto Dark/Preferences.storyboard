@@ -47,7 +47,7 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IIU-T6-wtt">
-                                <rect key="frame" x="181" y="12" width="49" height="21"/>
+                                <rect key="frame" x="181" y="13" width="49" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="bevel" title="GitHub" bezelStyle="rounded" alignment="center" refusesFirstResponder="YES" imageScaling="proportionallyDown" inset="2" id="xgt-0Z-L6y">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -146,7 +146,7 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gdb-W4-VEt">
-                                <rect key="frame" x="74" y="32" width="156" height="17"/>
+                                <rect key="frame" x="74" y="33" width="156" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Made by Matan Mashraki" id="Kwy-x9-oqK">
                                     <font key="font" metaFont="system"/>
@@ -155,7 +155,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KBW-NE-SiN">
-                                <rect key="frame" x="74" y="13" width="90" height="17"/>
+                                <rect key="frame" x="74" y="15" width="101" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Version 1.0 (1)" id="d4T-7P-Fqw">
                                     <font key="font" metaFont="system"/>

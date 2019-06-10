@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -15,6 +15,7 @@
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <customObject id="FTK-KS-jiM" customClass="ViewController" customModule="Auto_Dark" customModuleProvider="target">
             <connections>
+                <outlet property="alwaysLightMenu" destination="t6k-1A-bET" id="lPf-aV-Pfa"/>
                 <outlet property="informationLabel" destination="x2j-lb-dGE" id="h2a-gN-Zth"/>
                 <outlet property="locationLabel" destination="RV8-CO-E97" id="gSy-qa-8XP"/>
                 <outlet property="preferences" destination="nQy-si-fb5" id="3Pe-wH-4U6"/>
@@ -34,6 +35,10 @@
                     <connections>
                         <action selector="openPreferencesWithSender:" target="FTK-KS-jiM" id="irE-T0-LhT"/>
                     </connections>
+                </menuItem>
+                <menuItem title="Always Light" id="t97-bu-7Rk">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Always Light" id="t6k-1A-bET"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="hTN-mg-gtQ"/>
                 <menuItem title="Quit" id="HhO-zi-Alf">

@@ -16,6 +16,9 @@
 		908230B021F1FBB600FA2D36 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908230AF21F1FBB600FA2D36 /* LocationManager.swift */; };
 		908230B221F20F6600FA2D36 /* PreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908230B121F20F6600FA2D36 /* PreferencesController.swift */; };
 		90D19C2421F35FF9001C410D /* ScheduleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D19C2321F35FF9001C410D /* ScheduleManager.swift */; };
+		90F5E28122AEA5F200DB92D2 /* GetBundleIDs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 90F5E28022AEA5F200DB92D2 /* GetBundleIDs.scpt */; };
+		90F5E28522AEAC1000DB92D2 /* DarkMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F5E28422AEAC1000DB92D2 /* DarkMode.swift */; };
+		90F5E28722AEAC4600DB92D2 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F5E28622AEAC4600DB92D2 /* App.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,9 @@
 		908230AF21F1FBB600FA2D36 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		908230B121F20F6600FA2D36 /* PreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesController.swift; sourceTree = "<group>"; };
 		90D19C2321F35FF9001C410D /* ScheduleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleManager.swift; sourceTree = "<group>"; };
+		90F5E28022AEA5F200DB92D2 /* GetBundleIDs.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GetBundleIDs.scpt; sourceTree = "<group>"; };
+		90F5E28422AEAC1000DB92D2 /* DarkMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkMode.swift; sourceTree = "<group>"; };
+		90F5E28622AEAC4600DB92D2 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		90FB494F22022444000D6510 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,6 +74,7 @@
 			children = (
 				905E4A7821A19E2500D1DBC7 /* AppDelegate.swift */,
 				905E4A7F21A19E2500D1DBC7 /* Info.plist */,
+				90F5E28022AEA5F200DB92D2 /* GetBundleIDs.scpt */,
 				905E4A7A21A19E2500D1DBC7 /* Assets.xcassets */,
 				905E4A7C21A19E2500D1DBC7 /* MainMenu.xib */,
 				90222E9022018C9D004D183C /* Preferences.storyboard */,
@@ -76,6 +83,8 @@
 				908230AF21F1FBB600FA2D36 /* LocationManager.swift */,
 				90D19C2321F35FF9001C410D /* ScheduleManager.swift */,
 				905E4A8A21A1A62200D1DBC7 /* Solar.swift */,
+				90F5E28422AEAC1000DB92D2 /* DarkMode.swift */,
+				90F5E28622AEAC4600DB92D2 /* App.swift */,
 			);
 			path = "Auto Dark";
 			sourceTree = "<group>";
@@ -146,6 +155,7 @@
 				905E4A7B21A19E2500D1DBC7 /* Assets.xcassets in Resources */,
 				905E4A7E21A19E2500D1DBC7 /* MainMenu.xib in Resources */,
 				90222E9122018C9D004D183C /* Preferences.storyboard in Resources */,
+				90F5E28122AEA5F200DB92D2 /* GetBundleIDs.scpt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,10 +166,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90F5E28522AEAC1000DB92D2 /* DarkMode.swift in Sources */,
 				908230B021F1FBB600FA2D36 /* LocationManager.swift in Sources */,
 				908230B221F20F6600FA2D36 /* PreferencesController.swift in Sources */,
 				90D19C2421F35FF9001C410D /* ScheduleManager.swift in Sources */,
 				905E4A8B21A1A62200D1DBC7 /* Solar.swift in Sources */,
+				90F5E28722AEAC4600DB92D2 /* App.swift in Sources */,
 				905E4A8921A1A33300D1DBC7 /* ViewController.swift in Sources */,
 				905E4A7921A19E2500D1DBC7 /* AppDelegate.swift in Sources */,
 			);

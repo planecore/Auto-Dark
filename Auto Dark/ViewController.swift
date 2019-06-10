@@ -25,43 +25,6 @@
 //
 
 import Cocoa
-import CoreLocation
-
-struct DarkMode {
-    private static let prefix = "tell application \"System Events\" to tell appearance preferences to"
-    
-    static var isEnabled: Bool {
-        get {
-            return UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
-        }
-        set {
-            toggle(force: newValue)
-        }
-    }
-    
-    static func toggle(force: Bool? = nil) {
-        let value = force.map(String.init) ?? "not dark mode"
-        let command = "\(prefix) set dark mode to \(value)"
-        runAppleScript(command)
-    }
-}
-
-@discardableResult
-func runAppleScript(_ source: String) -> String {
-    var outstr = ""
-    let task = Process()
-    task.launchPath = "/bin/sh"
-    task.arguments = ["-c", "osascript -e '\(source)'"]
-    let pipe = Pipe()
-    task.standardOutput = pipe
-    task.launch()
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    if let output = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
-        outstr = output as String
-    }
-    task.waitUntilExit()
-    return outstr
-}
 
 enum ScheduleMode: String {
     case location = "Location", manual = "Manual", time = "Time"
@@ -94,6 +57,7 @@ class ViewController: NSObject, ViewControllerDelegate {
     @IBOutlet weak var informationLabel: NSMenuItem!
     @IBOutlet weak var preferences: NSMenuItem!
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    @IBOutlet weak var alwaysLightMenu: NSMenu!
     var timer: Timer?
     var date: DarkDate?
     
@@ -103,13 +67,15 @@ class ViewController: NSObject, ViewControllerDelegate {
         statusItem.button?.image = icon
         statusItem.menu = statusMenu
         setDarkManager()
+        setAlwaysLightMenu()
+        let center = NSWorkspace.shared.notificationCenter
+        center.addObserver(forName: NSWorkspace.didLaunchApplicationNotification, object: nil, queue: OperationQueue.main) { notification in
+            self.setAlwaysLightMenu()
+        }
     }
     
     func setDarkManager() {
         timer?.invalidate()
-        if let manager = darkManager as? LocationManager, manager.locationManager != nil {
-            manager.locationManager.stopMonitoringSignificantLocationChanges()
-        }
         if let stringMode = UserDefaults.standard.string(forKey: "mode") {
             mode = ScheduleMode(rawValue: stringMode)!
         }
@@ -147,6 +113,67 @@ class ViewController: NSObject, ViewControllerDelegate {
             self.informationLabel.title = (self.date!.dark ? "Sunset: " : "Sunrise: ") + dateFormatter.string(from: date.date!)
         } else {
             self.informationLabel.title = "Can't calculate Dark Mode for your location."
+        }
+    }
+    
+    @discardableResult
+    func getOpenedApps() -> [App] {
+        let path = Bundle.main.path(forResource: "GetBundleIDs", ofType: "scpt")!
+        var outstr = ""
+        let task = Process()
+        task.launchPath = "/usr/bin/osascript"
+        task.arguments = [path]
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.launch()
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        if let output = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
+            outstr = (output as String).replacingOccurrences(of: "\n", with: "")
+        }
+        task.waitUntilExit()
+        var apps = [App]()
+        for item in outstr.split(separator: " ").joined().split(separator: ",") {
+            if item != "com.apple.Safari" && item != "com.apple.mail" {
+                apps.append(App(bundle: String(item)))
+            }
+        }
+        return apps
+    }
+    
+    func setAlwaysLightMenu() {
+        alwaysLightMenu.removeAllItems()
+        let apps = getOpenedApps()
+        for app in apps {
+            let item = NSMenuItem(title: app.name, action: #selector(self.changeAlwaysLight), keyEquivalent: "")
+            item.image = app.image
+            item.isEnabled = true
+            item.target = self
+            item.toolTip = app.bundle
+            if app.alwaysLightModeStatus() {
+                item.state = .on
+            } else {
+                item.state = .off
+            }
+            alwaysLightMenu.addItem(item)
+        }
+    }
+    
+    @objc func changeAlwaysLight(_ sender: Any) {
+        if let represented = sender as? NSMenuItem {
+            print("selected \(represented.toolTip!)")
+            let app = App(bundle: represented.toolTip!)
+            if represented.state == .on {
+                app.alwaysLightOff()
+                represented.state = .off
+            } else {
+                app.alwaysLightOn()
+                represented.state = .on
+            }
+            let msg = NSAlert()
+            msg.addButton(withTitle: "OK")
+            msg.messageText = "Please Reopen " + app.name
+            msg.informativeText = "In order to change \(app.name) theme you must quit and reopen it."
+            msg.runModal()
         }
     }
     
