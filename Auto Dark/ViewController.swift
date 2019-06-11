@@ -116,33 +116,22 @@ class ViewController: NSObject, ViewControllerDelegate {
         }
     }
     
-    @discardableResult
     func getOpenedApps() -> [App] {
-        let path = Bundle.main.path(forResource: "GetBundleIDs", ofType: "scpt")!
-        var outstr = ""
-        let task = Process()
-        task.launchPath = "/usr/bin/osascript"
-        task.arguments = [path]
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.launch()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        if let output = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
-            outstr = (output as String).replacingOccurrences(of: "\n", with: "")
-        }
-        task.waitUntilExit()
+        let running = NSWorkspace.shared.runningApplications.filter({$0.activationPolicy == .regular})
         var apps = [App]()
-        for item in outstr.split(separator: " ").joined().split(separator: ",") {
-            if item != "com.apple.Safari" && item != "com.apple.mail" {
-                apps.append(App(bundle: String(item)))
+        for item in running {
+            if let bundle = item.bundleIdentifier {
+                if bundle != "com.apple.Safari" && bundle != "com.apple.mail" {
+                    apps.append(App(bundle: bundle))
+                }
             }
         }
         return apps
     }
     
     func setAlwaysLightMenu() {
-        alwaysLightMenu.removeAllItems()
         let apps = getOpenedApps()
+        var items = [NSMenuItem]()
         for app in apps {
             let item = NSMenuItem(title: app.name, action: #selector(self.changeAlwaysLight), keyEquivalent: "")
             item.image = app.image
@@ -154,8 +143,9 @@ class ViewController: NSObject, ViewControllerDelegate {
             } else {
                 item.state = .off
             }
-            alwaysLightMenu.addItem(item)
+            items.append(item)
         }
+        alwaysLightMenu.items = items
     }
     
     @objc func changeAlwaysLight(_ sender: Any) {
