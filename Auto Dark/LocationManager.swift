@@ -95,6 +95,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
         let geo = CLGeocoder()
         geo.reverseGeocodeLocation(currentLocation!) { (places, error) in
             if let place = places?.first {
+                manager.stopUpdatingLocation()
                 manager.stopMonitoringSignificantLocationChanges()
                 self.stringLocation = "\(place.locality!), \(place.country!)"
                 self.delegate?.setLocationLabel(string: self.stringLocation!)

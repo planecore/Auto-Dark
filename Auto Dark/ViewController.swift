@@ -159,11 +159,15 @@ class ViewController: NSObject, ViewControllerDelegate {
                 app.alwaysLightOn()
                 represented.state = .on
             }
-            let msg = NSAlert()
-            msg.addButton(withTitle: "OK")
-            msg.messageText = "Please Reopen " + app.name
-            msg.informativeText = "In order to change \(app.name) theme you must quit and reopen it."
-            msg.runModal()
+            if NSWorkspace.shared.runningApplications.contains(where: { nsapp -> Bool in
+                nsapp.bundleIdentifier == app.bundle
+            }) {
+                let msg = NSAlert()
+                msg.addButton(withTitle: "OK")
+                msg.messageText = "Please Reopen " + app.name
+                msg.informativeText = "In order to change \(app.name) theme you must quit and reopen it."
+                msg.runModal()
+            }
         }
     }
     
