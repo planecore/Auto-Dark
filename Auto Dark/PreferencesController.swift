@@ -31,6 +31,7 @@ protocol TypeLocationDelegate {
     func updateLocation(location: String)
 }
 
+/// Auto Dark Preferences
 class PreferencesController: NSViewController, TypeLocationDelegate {
 
     var delegate: ViewControllerDelegate?
@@ -41,9 +42,10 @@ class PreferencesController: NSViewController, TypeLocationDelegate {
     @IBOutlet weak var schedule: NSButton!
     @IBOutlet weak var sunrise: NSDatePicker!
     @IBOutlet weak var sunset: NSDatePicker!
-    @IBOutlet weak var version: NSTextField!
+    @IBOutlet weak var version: NSButton!
     var sunrisePrev: Date?
     var sunsetPrev: Date?
+    var first = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,12 +62,13 @@ class PreferencesController: NSViewController, TypeLocationDelegate {
         dateFormatter.dateFormat = "H:mm"
         sunrise.dateValue = dateFormatter.date(from: UserDefaults.standard.string(forKey: "sunrise")!)!
         sunset.dateValue = dateFormatter.date(from: UserDefaults.standard.string(forKey: "sunset")!)!
-        version.stringValue = "Version \(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!) (\(Bundle.main.infoDictionary!["CFBundleVersion"]!))"
+        version.title = Logger.getVersion()
         sunrisePrev = sunrise.dateValue
         sunsetPrev = sunset.dateValue
         states()
     }
     
+    /// Updates the states of the controls and changes Auto Dark mode.
     func states() {
         autoLocation.isEnabled = location.state()
         manualLocation.isEnabled = location.state()
@@ -76,8 +79,12 @@ class PreferencesController: NSViewController, TypeLocationDelegate {
             if autoLocation.state() { mode = .location }
             else if manualLocation.state() { mode = .manual }
         } else if schedule.state() { mode = .time }
-        UserDefaults.standard.set(mode.rawValue, forKey: "mode")
-        delegate?.setDarkManager()
+        if first {
+            first = false
+        } else {
+            UserDefaults.standard.set(mode.rawValue, forKey: "mode")
+            delegate?.setDarkManager()
+        }
     }
     
     @IBAction func locationCheck(_ sender: Any) {
@@ -137,16 +144,29 @@ class PreferencesController: NSViewController, TypeLocationDelegate {
         delegate?.setDarkManager()
     }
     
+    /// Opens Auto Dark on GitHub.
     @IBAction func websiteCheck(_ sender: Any) {
         let url = URL(string: "https://github.com/planecore/Auto-Dark")!
         NSWorkspace.shared.open(url)
     }
     
+    /**
+     Updates the location of the manual location mode.
+     
+     - Parameters:
+        - location: The loaction to set dark mode for.
+    */
     func updateLocation(location: String) {
+        Logger.log("Updated manual location")
         UserDefaults.standard.set(location, forKey: "location")
         typeLocation.title = location
         typeLocation.sizeToFit()
         delegate?.setDarkManager()
+    }
+    
+    /// Tells the `Logger` to reveal the log file.
+    @IBAction func clickedVersion(_ sender: Any) {
+        Logger.shareLog()
     }
     
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
@@ -173,6 +193,7 @@ extension NSButton {
     }
 }
 
+/// A view that asks for a new location for the manual location mode.
 class TypeLocationViewController: NSViewController {
     
     var delegate: TypeLocationDelegate?
@@ -188,6 +209,7 @@ class TypeLocationViewController: NSViewController {
         }
     }
     
+    /// Checks if the new location is valid and then passes it to the `PreferencesController`.
     @IBAction func done(_ sender: Any) {
         progress.startAnimation(self)
         let text = textField.stringValue

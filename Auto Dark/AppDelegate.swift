@@ -44,6 +44,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
+        let fm = FileManager.default
+        let path = fm.temporaryDirectory.appendingPathComponent("log.txt")
+        try? fm.removeItem(at: path)
     }
 
 }

@@ -27,6 +27,7 @@
 import Cocoa
 import CoreLocation
 
+/// `DarkManager` that updates toggle times based on manual or automatic location detection.
 class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
     
     var locationManager: CLLocationManager!
@@ -36,12 +37,15 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
     var currentLocation: CLLocation?
     var stringLocation: String?
     
+    /// Initialize `LocationManager` with manual or automatic detection.
     init(pref: ScheduleMode) {
         self.pref = pref
         super.init()
+        Logger.log("Created location manager \(pref)")
         determineCurrentLocation()
     }
     
+    /// Calculates next date for dark mode after getting the location and sends it to delegate.
     func calculateNextDate() {
         if let loc = currentLocation {
             let solar = Solar(coordinate: loc.coordinate)!
@@ -54,10 +58,12 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
                 nextRun = Solar(for: Calendar.current.date(byAdding: .day, value: 1, to: Date())!, coordinate: loc.coordinate)?.sunrise
             }
             next = DarkDate(date: nextRun, dark: dark)
+            Logger.log("Sent next toggle: to \(dark) at \(nextRun!)")
             delegate?.updatedNextDate()
         }
     }
     
+    /// Determines current location based on mode.
     func determineCurrentLocation() {
         if pref == .manual {
             setManualLocation()
@@ -69,11 +75,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
             if pref == .location, CLLocationManager.locationServicesEnabled() {
                 locationManager.startMonitoringSignificantLocationChanges()
             } else {
+                Logger.log("Doesn't have premissions to detect location.")
                 self.delegate?.setInformationLabel(string: "Authorize Auto Dark to detect your location in System Preferences.")
             }
         }
     }
     
+    /// Searches for the location that the user typed and tries to get `CLLocation`. On success it calls `calculateNextDate()`.
     func setManualLocation() {
         if let location = UserDefaults.standard.string(forKey: "location") {
             stringLocation = location
@@ -81,10 +89,15 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
             geo.geocodeAddressString(location) { (places, error) in
                 if let place = places?.first?.location {
                     self.currentLocation = place
+                    Logger.log("Received location with pref \(self.pref)")
                     self.calculateNextDate()
                     self.delegate?.setLocationLabel(string: location)
                 } else {
-                    self.presentError(error: error as? CLError)
+                    if let error = error {
+                        Logger.log("Counldn't recieve location with " + error.localizedDescription)
+                    } else {
+                        Logger.log("Counldn't recieve location with no error")
+                    }
                 }
             }
         }
@@ -99,15 +112,22 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
                 manager.stopMonitoringSignificantLocationChanges()
                 self.stringLocation = "\(place.locality!), \(place.country!)"
                 self.delegate?.setLocationLabel(string: self.stringLocation!)
+                Logger.log("Received location with pref \(self.pref)")
                 self.calculateNextDate()
             } else {
+                if let error = error {
+                    Logger.log("Counldn't recieve location with " + error.localizedDescription)
+                } else {
+                    Logger.log("Counldn't recieve location with no error")
+                }
                 self.delegate?.setLocationLabel(string: "Auto Dark")
             }
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if currentLocation == nil {
+            Logger.log("Counldn't recieve location with " + error.localizedDescription)
             presentError(error: error as? CLError)
         }
     }
@@ -116,9 +136,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate, DarkManager {
         if let err = error {
             var message = ""
             switch err.code.rawValue {
-            case 0, 2: message = "There's no internet connection."
             case 1: message = "Authorize Auto Dark to detect your location in System Preferences."
-            default: message = "Auto Dark can't detect your location"
+            case 2: message = "There's no internet connection."
+            default: message = "Can't detect your location"
             }
             self.delegate?.setLocationLabel(string: "Auto Dark")
             self.delegate?.setInformationLabel(string: message)

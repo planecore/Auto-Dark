@@ -26,6 +26,7 @@
 
 import Foundation
 
+/// `DarkManager` that updates toggle times based on sunset/sunrise times that the user provided.
 class ScheduleManager: NSObject, DarkManager {
     
     var delegate: ViewControllerDelegate?
@@ -33,7 +34,9 @@ class ScheduleManager: NSObject, DarkManager {
     var sunriseString = UserDefaults.standard.string(forKey: "sunrise")!
     var sunsetString = UserDefaults.standard.string(forKey: "sunset")!
     
+    /// Calculates next date for dark mode based on user sunrise/sunset times and sends it to delegate.
     func calculateNextDate() {
+        Logger.log("Created schedule manager")
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM dd yyyy H:mm"
         let sunrise = dateFormatter.date(from: currentDate() + " " + sunriseString)!
@@ -50,10 +53,17 @@ class ScheduleManager: NSObject, DarkManager {
             nextRun = Calendar.current.date(byAdding: .day, value: 1, to: sunrise)!
         }
         next = DarkDate(date: nextRun, dark: dark)
+        Logger.log("Sent next toggle: to \(dark) at \(nextRun!)")
+        Logger.log("Sunrise: \(sunriseString), Sunset: \(sunsetString)")
         delegate?.updatedNextDate()
     }
     
-    func currentDate() -> String {
+    /**
+     Gets the current date.
+     
+     - Returns: The current time in the format `MMMM dd yyyy`.
+    */
+    private func currentDate() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM dd yyyy"
         return dateFormatter.string(from: Date())

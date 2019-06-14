@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="wIX-YV-IFe">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="wIX-YV-IFe">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -56,6 +56,18 @@
                                 <color key="contentTintColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                 <connections>
                                     <action selector="websiteCheck:" target="8lQ-qw-cjs" id="XTr-II-VFv"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Os-6j-ysR">
+                                <rect key="frame" x="74" y="15" width="108" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="bevel" title="Version 1.0 (1)" bezelStyle="rounded" refusesFirstResponder="YES" imageScaling="proportionallyDown" inset="2" id="qqQ-3j-Lra">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <color key="contentTintColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <connections>
+                                    <action selector="clickedVersion:" target="8lQ-qw-cjs" id="4FE-r9-4wn"/>
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Frx-V6-T4a">
@@ -154,15 +166,6 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KBW-NE-SiN">
-                                <rect key="frame" x="74" y="15" width="101" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Version 1.0 (1)" id="d4T-7P-Fqw">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hnC-gK-ST3">
                                 <rect key="frame" x="39" y="122" width="50" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -191,7 +194,7 @@
                         <outlet property="sunrise" destination="NC7-zH-hdp" id="JfW-lC-Ov6"/>
                         <outlet property="sunset" destination="jes-A4-o7C" id="imf-oa-RUh"/>
                         <outlet property="typeLocation" destination="tSk-pi-Mqe" id="lFL-Zc-aq5"/>
-                        <outlet property="version" destination="KBW-NE-SiN" id="dC0-7D-30U"/>
+                        <outlet property="version" destination="2Os-6j-ysR" id="jDz-7m-ObM"/>
                     </connections>
                 </viewController>
                 <customObject id="ZhN-8K-Dp0" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

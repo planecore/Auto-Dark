@@ -26,11 +26,18 @@
 
 import Cocoa
 
+/// `App` can check if an app is always light and it can also change its always light status.
 class App {
     let bundle: String
     let name: String
     let image: NSImage
     
+    /**
+     Initializes `App` with an app bundle identifier.
+     
+     - Parameters:
+        - bundle: The bundle identifier of the app.
+    */
     init(bundle: String) {
         self.bundle = bundle
         let path = NSWorkspace.shared.absolutePathForApplication(withBundleIdentifier: bundle)
@@ -38,10 +45,23 @@ class App {
         self.image = NSWorkspace.shared.icon(forFile: path!)
     }
     
+    /**
+     Checks the always light status of the `App`.
+     
+     - Returns: Returns `true` if always light mode is on.
+    */
     func alwaysLightModeStatus() -> Bool {
         return getStatusFromDefaults() == "1\n"
     }
     
+    /**
+     Checks in the defaults the always light status of the `App`.
+     
+     - Returns:
+        - `1\n` if it's always light
+        - `0\n` if it's always dark
+        - `The domain pair does not exist` if it's following the system appearance.
+    */
     @discardableResult
     private func getStatusFromDefaults() -> String {
         var outstr = ""
@@ -59,23 +79,20 @@ class App {
         return outstr
     }
     
-    func alwaysLightOn() {
+    /**
+     Sets the always light mode status for the `App`.
+     
+     - Parameters:
+        - to: `true` to enable always light mode, `false` to disable.
+    */
+    func setAlwaysLightMode(to: Bool) {
         let task = Process()
         task.launchPath = "/usr/bin/defaults"
-        task.arguments = ["write", bundle, "NSRequiresAquaSystemAppearance", "-bool", "YES"]
+        task.arguments = to ? ["write", bundle, "NSRequiresAquaSystemAppearance", "-bool", "YES"] : ["delete", bundle, "NSRequiresAquaSystemAppearance"]
         let pipe = Pipe()
         task.standardOutput = pipe
         task.launch()
         task.waitUntilExit()
     }
-    
-    func alwaysLightOff() {
-        let task = Process()
-        task.launchPath = "/usr/bin/defaults"
-        task.arguments = ["delete", bundle, "NSRequiresAquaSystemAppearance"]
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.launch()
-        task.waitUntilExit()
-    }
+
 }

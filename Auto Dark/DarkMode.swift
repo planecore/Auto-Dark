@@ -3,7 +3,7 @@
 //  Auto Dark
 //
 //  Created by Sindre Sorhus.
-//  Copyright © 2019 Sindre Sorhus. All rights reserved.
+//  Copyright © 2018 Sindre Sorhus. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the “Software”), to deal
@@ -26,9 +26,12 @@
 
 import Foundation
 
+/// Handles Dark Mode toggling.
 struct DarkMode {
+    
     private static let prefix = "tell application \"System Events\" to tell appearance preferences to"
     
+    /// Checks if Dark Mode is enabled.
     static var isEnabled: Bool {
         get {
             return UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
@@ -38,13 +41,28 @@ struct DarkMode {
         }
     }
     
+    /**
+     Toggles Dark Mode.
+     
+     - Parameters:
+        - force: Force Dark Mode to be on or off.
+    */
     static func toggle(force: Bool? = nil) {
         let value = force.map(String.init) ?? "not dark mode"
         let command = "\(prefix) set dark mode to \(value)"
         runAppleScript(command)
     }
+    
 }
 
+/**
+ Runs Apple Script.
+ 
+ - Parameters:
+    - sorce: The code to run.
+ 
+ - Returns: The output of the script.
+*/
 @discardableResult
 func runAppleScript(_ source: String) -> String {
     var outstr = ""

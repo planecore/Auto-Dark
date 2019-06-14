@@ -26,25 +26,48 @@
 
 import Cocoa
 
+/**
+ - `.location` for automatic location detection
+ - `.manual` to type location manually
+ - `.time` to set sunrise and sunset times manually
+*/
 enum ScheduleMode: String {
     case location = "Location", manual = "Manual", time = "Time"
 }
 
+/// Contains the next toggle date and the mode to toggle to.
 struct DarkDate {
     var date: Date?
     var dark: Bool
 }
 
 protocol DarkManager {
+    /// The `ViewController` delegate.
     var delegate: ViewControllerDelegate? {get set}
+    /// The next date to toggle dark mode on/off.
     var next: DarkDate? {get}
+    /// Tells the `DarkManager` to calculate the next date for dark mode.
     func calculateNextDate()
 }
 
 protocol ViewControllerDelegate {
+    /// Updates the date to toggle dark mode at when the manager sent toggle time.
     func updatedNextDate()
+    /**
+     Updates the location label in Auto Dark menu bar.
+     
+     - Parameters:
+        - string: The text to write to the label.
+    */
     func setLocationLabel(string: String)
+    /**
+     Updates the informaion label in Auto Dark menu bar.
+     
+     - Parameters:
+     - string: The text to write to the label.
+     */
     func setInformationLabel(string: String)
+    /// Removes the old manager if needed and creates a new manager to toggle dark mode.
     func setDarkManager()
 }
 
@@ -66,6 +89,8 @@ class ViewController: NSObject, ViewControllerDelegate {
         icon?.isTemplate = true
         statusItem.button?.image = icon
         statusItem.menu = statusMenu
+        Logger.log(Logger.getVersion(), withTime: false)
+        Logger.log("System at start dark mode enabled: \(DarkMode.isEnabled)")
         setDarkManager()
         setAlwaysLightMenu()
         let center = NSWorkspace.shared.notificationCenter
@@ -74,11 +99,16 @@ class ViewController: NSObject, ViewControllerDelegate {
         }
     }
     
+    /// Removes the old manager if needed and creates a new manager to toggle dark mode.
     func setDarkManager() {
         timer?.invalidate()
+        if let manager = darkManager as? LocationManager, manager.locationManager != nil {
+            manager.locationManager.delegate = nil
+        }
         if let stringMode = UserDefaults.standard.string(forKey: "mode") {
             mode = ScheduleMode(rawValue: stringMode)!
         }
+        Logger.log("Setting up dark manager with mode \(mode)")
         first = true
         informationLabel.title = "Calculating..."
         locationLabel.title = "Auto Dark"
@@ -101,26 +131,36 @@ class ViewController: NSObject, ViewControllerDelegate {
         RunLoop.main.add(timer!, forMode: .common)
     }
     
+    /// Updates the date to toggle dark mode at when the manager sent toggle time.
     func updatedNextDate() {
+        Logger.log("Dark manager sent next toggle time")
         if let date = darkManager?.next {
             if first {
                 first = false
                 DarkMode.toggle(force: !date.dark)
             }
             self.date = date
+            Logger.log("Recieved next toggle: to \(self.date!.dark) at \(self.date!.date!)")
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "H:mm"
             self.informationLabel.title = (self.date!.dark ? "Sunset: " : "Sunrise: ") + dateFormatter.string(from: date.date!)
         } else {
+            Logger.log("Can't calculate toggle times")
             self.informationLabel.title = "Can't calculate Dark Mode for your location."
         }
     }
     
+    /**
+     Get all the visible opened apps.
+     
+     - Returns: Array of `App` with all the visible opened apps.
+    */
     func getOpenedApps() -> [App] {
         let running = NSWorkspace.shared.runningApplications.filter({$0.activationPolicy == .regular})
         var apps = [App]()
         for item in running {
             if let bundle = item.bundleIdentifier {
+                // It's not possible to set Safari and Mail to be always light.
                 if bundle != "com.apple.Safari" && bundle != "com.apple.mail" {
                     apps.append(App(bundle: bundle))
                 }
@@ -129,6 +169,7 @@ class ViewController: NSObject, ViewControllerDelegate {
         return apps
     }
     
+    /// Shows all open apps in the Auto Dark menu with their always light status.
     func setAlwaysLightMenu() {
         let apps = getOpenedApps()
         var items = [NSMenuItem]()
@@ -148,15 +189,21 @@ class ViewController: NSObject, ViewControllerDelegate {
         alwaysLightMenu.items = items
     }
     
+    /**
+     Updates always light status for an app.
+     
+     - Parameters:
+        - sender: The `NSMenuItem` that represents the app to update.
+    */
     @objc func changeAlwaysLight(_ sender: Any) {
         if let represented = sender as? NSMenuItem {
-            print("selected \(represented.toolTip!)")
+            Logger.log("changed always light mode for \(represented.toolTip!)")
             let app = App(bundle: represented.toolTip!)
             if represented.state == .on {
-                app.alwaysLightOff()
+                app.setAlwaysLightMode(to: false)
                 represented.state = .off
             } else {
-                app.alwaysLightOn()
+                app.setAlwaysLightMode(to: true)
                 represented.state = .on
             }
             if NSWorkspace.shared.runningApplications.contains(where: { nsapp -> Bool in
@@ -164,21 +211,34 @@ class ViewController: NSObject, ViewControllerDelegate {
             }) {
                 let msg = NSAlert()
                 msg.addButton(withTitle: "OK")
-                msg.messageText = "Please Reopen " + app.name
-                msg.informativeText = "In order to change \(app.name) theme you must quit and reopen it."
+                msg.messageText = "Relaunch " + app.name + " In Order To Take Effects"
+                msg.informativeText = "In order to change \(app.name) appearance you must quit and reopen it."
                 msg.runModal()
             }
         }
     }
     
+    /**
+     Updates the location label in Auto Dark menu bar.
+     
+     - Parameters:
+     - string: The text to write to the label.
+     */
     func setLocationLabel(string: String) {
         locationLabel.title = string
     }
     
+    /**
+     Updates the information label in Auto Dark menu bar.
+     
+     - Parameters:
+     - string: The text to write to the label.
+     */
     func setInformationLabel(string: String) {
         informationLabel.title = string
     }
     
+    /// Open Auto Dark preferences.
     @IBAction func openPreferences(sender: NSMenuItem) {
         if !NSApplication.shared.windows.contains { (window) -> Bool in
             window.title == "Auto Dark"

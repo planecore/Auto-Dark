@@ -16,6 +16,7 @@
 		908230B021F1FBB600FA2D36 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908230AF21F1FBB600FA2D36 /* LocationManager.swift */; };
 		908230B221F20F6600FA2D36 /* PreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908230B121F20F6600FA2D36 /* PreferencesController.swift */; };
 		90D19C2421F35FF9001C410D /* ScheduleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D19C2321F35FF9001C410D /* ScheduleManager.swift */; };
+		90D28BC922B3CE89007A6938 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D28BC822B3CE89007A6938 /* Logger.swift */; };
 		90F5E28522AEAC1000DB92D2 /* DarkMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F5E28422AEAC1000DB92D2 /* DarkMode.swift */; };
 		90F5E28722AEAC4600DB92D2 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F5E28622AEAC4600DB92D2 /* App.swift */; };
 /* End PBXBuildFile section */
@@ -33,6 +34,7 @@
 		908230AF21F1FBB600FA2D36 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		908230B121F20F6600FA2D36 /* PreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesController.swift; sourceTree = "<group>"; };
 		90D19C2321F35FF9001C410D /* ScheduleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleManager.swift; sourceTree = "<group>"; };
+		90D28BC822B3CE89007A6938 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		90F5E28422AEAC1000DB92D2 /* DarkMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkMode.swift; sourceTree = "<group>"; };
 		90F5E28622AEAC4600DB92D2 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		90FB494F22022444000D6510 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 				905E4A8A21A1A62200D1DBC7 /* Solar.swift */,
 				90F5E28422AEAC1000DB92D2 /* DarkMode.swift */,
 				90F5E28622AEAC4600DB92D2 /* App.swift */,
+				90D28BC822B3CE89007A6938 /* Logger.swift */,
 			);
 			path = "Auto Dark";
 			sourceTree = "<group>";
@@ -166,6 +169,7 @@
 				908230B021F1FBB600FA2D36 /* LocationManager.swift in Sources */,
 				908230B221F20F6600FA2D36 /* PreferencesController.swift in Sources */,
 				90D19C2421F35FF9001C410D /* ScheduleManager.swift in Sources */,
+				90D28BC922B3CE89007A6938 /* Logger.swift in Sources */,
 				905E4A8B21A1A62200D1DBC7 /* Solar.swift in Sources */,
 				90F5E28722AEAC4600DB92D2 /* App.swift in Sources */,
 				905E4A8921A1A33300D1DBC7 /* ViewController.swift in Sources */,
