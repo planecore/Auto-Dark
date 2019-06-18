@@ -33,8 +33,8 @@ struct Logger {
      Gets a message, prints it and appends it to the log.
      
      - Parameters:
-     - message: The message to save.
-     - withTime: Includes the time of the message if true.
+        - message: The message to save.
+        - withTime: Includes the time of the message if true.
      */
     static func log(_ message: String, withTime: Bool = true) {
         let save = withTime ? getTime() + " " + message : message
